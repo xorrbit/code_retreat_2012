@@ -37,7 +37,29 @@ describe "Game of Life", ->
       it "has 2 neighbors", ->
         cell = new Cell(false, 2)
         expect(cell.willBeAliveNextTick()).toBe(false)
-  describe "board", ->
+  describe "Board class", ->
+    describe "evolve()", ->
+      it "empty board should evolve into empty board", ->
+        board = new Board([])
+        expect(board.evolve().compare(new Board([]))).toBe(0)
+      it "board with one cell should evolve into empty board", ->
+        board = new Board([1, 1])
+        expect(board.evolve().compare(new Board([]))).toBe(0)
+      it "board with single blinker should blink", ->
+        board = new Board([1, 1], [1, 2], [1, 3])
+        expect(board.evolve().compare(new Board([0, 2], [1, 2], [2, 2]))).toBe(0)
+      it "board with single blinker in opposite start state should blink", ->
+        board = new Board([0, 2], [1, 2], [2, 2])
+        expect(board.evolve().compare(new Board([1, 1], [1, 2], [1, 3]))).toBe(0)
+      it "board with single block still life will evolve into same", ->
+        board = new Board([1, 1], [1, 2], [2, 1], [2, 2])
+        expect(board.evolve().compare(new Board([1, 1], [1, 2], [2, 1], [2, 2]))).toBe(0)
+    describe "cellAt()", ->
+      it "should generate a cell from a static board", ->
+        board = new Board([1, 1], [1, 2], [1, 3])
+        cell = board.cellAt(1, 2)
+        expect(cell.isAlive()).toBe(true)
+        expect(cell.numberOfLiveNeighbors()).toBe(2)
     describe "constructor", ->
       it "retains seed state", ->
         board = new Board([1, 2])
